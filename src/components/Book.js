@@ -27,7 +27,11 @@ function Book(props) {
           </div>
         </div>
         <div className="book-title">{name}</div>
-        <div className="book-authors">{author}</div>
+        <div className="book-authors">
+          {author.map((str, index) => (
+            <div key={"author" + id + index}>{str}</div>
+          ))}
+        </div>
       </div>
     </li>
   );
