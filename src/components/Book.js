@@ -1,26 +1,7 @@
 import React from "react";
-import { update } from "../BooksAPI";
 
 function Book(props) {
   const { name, author, url, shelf, id, updateShelf, useIn } = props;
-
-  // const setOptions = () => {
-  //     const selectedOptions = [
-  //         {text: 'Currently Reading', value: "currentlyReading"},
-  //         {text: 'Want to Read', value: "wantToRead"},
-  //         {text: 'Read', value: "read"}
-  //     ];
-
-  //     return(
-  //         <select defaultValue={shelf}>
-  //             <option value="move" disabled>Move to...</option>
-  //             <option value="currentlyReading" >Currently Reading</option>
-  //             <option value="wantToRead" >Want to Read</option>
-  //             <option value="read" >Read</option>
-  //             <option value="none">None</option>
-  //         </select>
-  //     )
-  // }
 
   return (
     <li>

@@ -10,6 +10,22 @@ class SearchPage extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.booksIdArr !== prevProps.booksIdArr) {
+      let newResult = this.state.result.filter((obj) => {
+        let index = this.props.booksIdArr.indexOf(obj.id);
+
+        if (index === -1) {
+          return obj;
+        }
+      });
+      this.setState({
+        result: [...newResult],
+      });
+    }
+  }
+
   async changeHandler(event) {
     await search(event.target.value)
       .then((res) => {

@@ -60,18 +60,41 @@ class BooksApp extends React.Component {
 
   async updateShelf(id, shelf) {
     await update(id, shelf)
-      .then(() => {
-        const newBooks = this.state.books.map((obj) => {
-          if (obj.id === id) {
-            obj.shelf = shelf;
-          }
-          return obj;
-        });
+      .then(async () => {
+        let newBooks;
+        let newBook = true;
+        if (shelf !== "none") {
+          newBooks = this.state.books.map((obj) => {
+            if (obj.id === id) {
+              obj.shelf = shelf;
+              newBook = false;
+            }
+            return obj;
+          });
+        } else {
+          newBooks = this.state.books.filter((obj) => {
+            if (obj.id !== id) {
+              return obj;
+            } else {
+              newBook = false;
+            }
+          });
+        }
 
-        this.setState({
-          ...this.state,
-          books: [...newBooks],
-        });
+        !newBook
+          ? this.setState({
+              ...this.state,
+              books: [...newBooks],
+            })
+          : await getAll()
+              .then((res) => {
+                console.log(res);
+                this.setState({
+                  ...this.state,
+                  books: [...res],
+                });
+              })
+              .catch((e) => console.log(e));
       })
       .catch((e) => console.log(e));
   }
