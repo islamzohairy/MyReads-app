@@ -1,9 +1,11 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Bookshelf from "./components/Bookshelf";
 import Header from "./components/Header";
 import OpenButton from "./components/OpenButton";
 import SearchPage from "./components/SearchPage";
+import NotFound from "./components/NotFound";
 import { getAll, update } from "./BooksAPI";
+import { withRouter } from "react-router-dom";
 
 // import * as BooksAPI from './BooksAPI'
 import "./App.css";
@@ -100,47 +102,56 @@ class BooksApp extends React.Component {
   }
 
   render() {
+    console.log("check", this.props.history.location.pathname);
+    const { pathname } = this.props.history.location;
+    const regex = /(^\/$)|(^\/search(\/(?!\/)([\S]*))?$)/i;
     return (
       <div className="app">
-        <Route path="/search">
-          <SearchPage
-            booksIdArr={this.state.books.map((obj) => obj.id)}
-            handler={this.backButtonHandler.bind(this)}
-            updateShelf={this.updateShelf.bind(this)}
-          />
-        </Route>
+        {regex.test(pathname) ? (
+          <Fragment>
+            <Route path="/search">
+              <SearchPage
+                booksIdArr={this.state.books.map((obj) => obj.id)}
+                handler={this.backButtonHandler.bind(this)}
+                updateShelf={this.updateShelf.bind(this)}
+              />
+            </Route>
 
-        <Route exact path="/">
-          <div className="list-books">
-            <Header />
+            <Route exact path="/">
+              <div className="list-books">
+                <Header />
 
-            <div className="list-books-content">
-              {/* <div> */}
-              <Bookshelf
-                title={"Currently Reading"}
-                books={this.setCurrentlyReading()}
-                updateShelf={this.updateShelf.bind(this)}
-              />
-              <Bookshelf
-                title={"Want to Read"}
-                books={this.setWantToRead()}
-                updateShelf={this.updateShelf.bind(this)}
-              />
-              <Bookshelf
-                title={"Read"}
-                books={this.setRead()}
-                updateShelf={this.updateShelf.bind(this)}
-              />
-              {/* </div> */}
-            </div>
-            <Link to="/search">
-              <OpenButton />
-            </Link>
-          </div>
-        </Route>
+                <div className="list-books-content">
+                  {/* <div> */}
+                  <Bookshelf
+                    title={"Currently Reading"}
+                    books={this.setCurrentlyReading()}
+                    updateShelf={this.updateShelf.bind(this)}
+                  />
+                  <Bookshelf
+                    title={"Want to Read"}
+                    books={this.setWantToRead()}
+                    updateShelf={this.updateShelf.bind(this)}
+                  />
+                  <Bookshelf
+                    title={"Read"}
+                    books={this.setRead()}
+                    updateShelf={this.updateShelf.bind(this)}
+                  />
+                  {/* </div> */}
+                </div>
+                <Link to="/search">
+                  <OpenButton />
+                </Link>
+              </div>
+            </Route>
+          </Fragment>
+        ) : (
+          <NotFound />
+        )}
       </div>
     );
   }
 }
 
-export default BooksApp;
+export default withRouter(BooksApp);

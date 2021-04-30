@@ -51,7 +51,7 @@ class SearchPage extends React.Component {
   }
 
   render() {
-    const { handler, updateShelf } = this.props;
+    const { updateShelf } = this.props;
 
     return (
       <div className="search-books">
