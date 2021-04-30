@@ -7,6 +7,7 @@ import { getAll, update } from "./BooksAPI";
 
 // import * as BooksAPI from './BooksAPI'
 import "./App.css";
+import { Link, Route } from "react-router-dom";
 
 class BooksApp extends React.Component {
   state = {
@@ -101,13 +102,15 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
+        <Route path="/search">
           <SearchPage
             booksIdArr={this.state.books.map((obj) => obj.id)}
             handler={this.backButtonHandler.bind(this)}
             updateShelf={this.updateShelf.bind(this)}
           />
-        ) : (
+        </Route>
+
+        <Route exact path="/">
           <div className="list-books">
             <Header />
 
@@ -130,10 +133,11 @@ class BooksApp extends React.Component {
               />
               {/* </div> */}
             </div>
-
-            <OpenButton handler={this.showSearchPageHandler.bind(this)} />
+            <Link to="/search">
+              <OpenButton />
+            </Link>
           </div>
-        )}
+        </Route>
       </div>
     );
   }
