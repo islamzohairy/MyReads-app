@@ -25,21 +25,25 @@ class SearchPage extends React.Component {
   }
 
   async changeHandler(event) {
-    await search(event.target.value)
-      .then((res) => {
-        let arr = [];
-        if (!res.error) {
-          let newRes = res.filter(
-            (obj) => this.props.booksIdArr.indexOf(obj.id) === -1
-          );
-          arr = [...newRes];
-        }
+    event.target.value
+      ? await search(event.target.value)
+          .then((res) => {
+            let arr = [];
+            if (!res.error) {
+              let newRes = res.filter(
+                (obj) => this.props.booksIdArr.indexOf(obj.id) === -1
+              );
+              arr = [...newRes];
+            }
 
-        this.setState({
-          result: [...arr],
+            this.setState({
+              result: [...arr],
+            });
+          })
+          .catch((e) => console.log(e))
+      : this.setState({
+          result: [],
         });
-      })
-      .catch((e) => console.log(e));
   }
 
   async addHandler(id, shelf) {
