@@ -73,11 +73,10 @@ class BooksApp extends React.Component {
           });
         } else {
           newBooks = this.state.books.filter((obj) => {
-            if (obj.id !== id) {
-              return obj;
-            } else {
+            if (obj.id === id) {
               newBook = false;
             }
+            return obj.id !== id;
           });
         }
 

@@ -13,13 +13,10 @@ class SearchPage extends React.Component {
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.booksIdArr !== prevProps.booksIdArr) {
-      let newResult = this.state.result.filter((obj) => {
-        let index = this.props.booksIdArr.indexOf(obj.id);
+      let newResult = this.state.result.filter(
+        (obj) => this.props.booksIdArr.indexOf(obj.id) === -1
+      );
 
-        if (index === -1) {
-          return obj;
-        }
-      });
       this.setState({
         result: [...newResult],
       });
@@ -31,17 +28,12 @@ class SearchPage extends React.Component {
       .then((res) => {
         let arr = [];
         if (!res.error) {
-          console.log(this.props.booksIdArr);
-          let newRes = res.filter((obj) => {
-            let index = this.props.booksIdArr.indexOf(obj.id);
-            console.log(index);
-            if (index === -1) {
-              return obj;
-            }
-          });
+          let newRes = res.filter(
+            (obj) => this.props.booksIdArr.indexOf(obj.id) === -1
+          );
           arr = [...newRes];
         }
-        console.log(res);
+
         this.setState({
           result: [...arr],
         });
@@ -85,19 +77,26 @@ class SearchPage extends React.Component {
         <div className="search-books-results">
           <ol className="books-grid">
             {this.state.result.map((obj) => {
-              if (obj.imageLinks) {
-                return (
-                  <Book
-                    key={obj.id}
-                    name={obj.title}
-                    author={obj.authors}
-                    url={obj.imageLinks.thumbnail}
-                    id={obj.id}
-                    updateShelf={updateShelf}
-                    useIn="search"
-                  />
-                );
-              }
+              return obj.imageLinks ? (
+                <Book
+                  key={obj.id}
+                  name={obj.title}
+                  author={obj.authors}
+                  url={obj.imageLinks.thumbnail}
+                  id={obj.id}
+                  updateShelf={updateShelf}
+                  useIn="search"
+                />
+              ) : (
+                <Book
+                  key={obj.id}
+                  name={obj.title}
+                  author={obj.authors}
+                  id={obj.id}
+                  updateShelf={updateShelf}
+                  useIn="search"
+                />
+              );
             })}
           </ol>
         </div>
