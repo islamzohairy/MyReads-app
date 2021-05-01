@@ -71,7 +71,7 @@ class SearchPage extends React.Component {
         ...this.state,
         result: [],
       });
-    } else {
+    } else if (value.length > 0) {
       this.searchReqHandler(value);
     }
   }
