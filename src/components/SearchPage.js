@@ -7,11 +7,13 @@ class SearchPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      query: "",
+      invalid: "",
       result: [],
     };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     // Typical usage (don't forget to compare props):
     if (this.props.booksIdArr !== prevProps.booksIdArr) {
       let newResult = this.state.result.filter(
@@ -19,39 +21,66 @@ class SearchPage extends React.Component {
       );
 
       this.setState({
+        ...this.state,
         result: [...newResult],
       });
     }
+
+    if (this.state.query !== prevState.query) {
+      this.changeHandler(this.state.query);
+    }
   }
 
-  async changeHandler(event) {
-    event.target.value
-      ? await search(event.target.value)
-          .then((res) => {
-            let arr = [];
-            if (!res.error) {
-              let newRes = res.filter(
-                (obj) => this.props.booksIdArr.indexOf(obj.id) === -1
-              );
-              arr = [...newRes];
-            }
-
-            this.setState({
-              result: [...arr],
-            });
-          })
-          .catch((e) => console.log(e))
-      : this.setState({
-          result: [],
-        });
-  }
-
-  async addHandler(id, shelf) {
-    await update(id, shelf)
+  searchReqHandler(value) {
+    search(value)
       .then((res) => {
-        console.log(res);
+        let arr = [];
+        if ("error" in res) {
+          this.setState({
+            ...this.state,
+            invalid: value,
+            result: [],
+          });
+        } else {
+          console.log(res);
+          let newRes = res.filter(
+            (obj) => this.props.booksIdArr.indexOf(obj.id) === -1
+          );
+          arr = [...newRes];
+
+          this.setState({
+            ...this.state,
+            result: [...arr],
+            invalid: "",
+          });
+        }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  async changeHandler(value) {
+    if (
+      this.state.invalid.length > 0 &&
+      value.includes(this.state.invalid) &&
+      value.length > this.state.invalid.length
+    ) {
+      console.log("invalid: ", this.state.invalid);
+      this.setState({
+        ...this.state,
+        result: [],
+      });
+    } else {
+      this.searchReqHandler(value);
+    }
+  }
+
+  queryHandler(event) {
+    this.setState({
+      ...this.state,
+      query: event.target.value,
+    });
   }
 
   render() {
@@ -74,7 +103,7 @@ class SearchPage extends React.Component {
                         you don't find a specific author or title. Every search is limited by search terms.
                     */}
             <input
-              onChange={(event) => this.changeHandler(event)}
+              onChange={(event) => this.queryHandler(event)}
               type="text"
               placeholder="Search by title or author"
             />
@@ -82,28 +111,29 @@ class SearchPage extends React.Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {this.state.result.map((obj) => {
-              return obj.imageLinks ? (
-                <Book
-                  key={obj.id}
-                  name={obj.title}
-                  author={obj.authors}
-                  url={obj.imageLinks.thumbnail}
-                  id={obj.id}
-                  updateShelf={updateShelf}
-                  useIn="search"
-                />
-              ) : (
-                <Book
-                  key={obj.id}
-                  name={obj.title}
-                  author={obj.authors}
-                  id={obj.id}
-                  updateShelf={updateShelf}
-                  useIn="search"
-                />
-              );
-            })}
+            {this.state.query &&
+              this.state.result.map((obj) => {
+                return obj.imageLinks ? (
+                  <Book
+                    key={obj.id}
+                    name={obj.title}
+                    author={obj.authors}
+                    url={obj.imageLinks.thumbnail}
+                    id={obj.id}
+                    updateShelf={updateShelf}
+                    useIn="search"
+                  />
+                ) : (
+                  <Book
+                    key={obj.id}
+                    name={obj.title}
+                    author={obj.authors}
+                    id={obj.id}
+                    updateShelf={updateShelf}
+                    useIn="search"
+                  />
+                );
+              })}
           </ol>
         </div>
       </div>
