@@ -15,7 +15,7 @@ function Bookshelf(props) {
         updateShelf={updateShelf}
       />
     ));
-    return result;
+    return result.length > 0 ? result : <li>No books in this section</li>;
   };
 
   return (
