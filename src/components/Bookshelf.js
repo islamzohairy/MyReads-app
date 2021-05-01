@@ -13,7 +13,6 @@ function Bookshelf(props) {
         shelf={obj.shelf}
         id={obj.id}
         updateShelf={updateShelf}
-        useIn="shelf"
       />
     ));
     return result;

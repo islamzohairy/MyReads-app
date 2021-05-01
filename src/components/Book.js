@@ -1,7 +1,7 @@
 import React from "react";
 
 function Book(props) {
-  const { name, author, url, shelf, id, updateShelf, useIn } = props;
+  const { name, author, url, shelf, id, updateShelf } = props;
 
   return (
     <li>
@@ -22,7 +22,7 @@ function Book(props) {
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>
               <option value="read">Read</option>
-              {useIn !== "search" && <option value="none">None</option>}
+              <option value="none">None</option>
             </select>
           </div>
         </div>

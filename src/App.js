@@ -26,7 +26,6 @@ class BooksApp extends React.Component {
   async componentDidMount() {
     await getAll()
       .then((res) => {
-        console.log(res);
         this.setState({
           ...this.state,
           books: [...res],
@@ -90,7 +89,6 @@ class BooksApp extends React.Component {
             })
           : await getAll()
               .then((res) => {
-                console.log(res);
                 this.setState({
                   ...this.state,
                   books: [...res],
@@ -102,7 +100,6 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    console.log("check", this.props.history.location.pathname);
     const { pathname } = this.props.history.location;
     const regex = /(^\/$)|(^\/search(\/(?!\/)([\S]*))?$)/i;
     return (
@@ -111,7 +108,12 @@ class BooksApp extends React.Component {
           <Fragment>
             <Route path="/search">
               <SearchPage
-                booksIdArr={this.state.books.map((obj) => obj.id)}
+                booksArr={this.state.books.map((obj) => {
+                  let object = {};
+                  object.id = obj.id;
+                  object.shelf = obj.shelf;
+                  return object;
+                })}
                 handler={this.backButtonHandler.bind(this)}
                 updateShelf={this.updateShelf.bind(this)}
               />
